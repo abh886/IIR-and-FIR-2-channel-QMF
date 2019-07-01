@@ -19,19 +19,19 @@ C=hann(26)
 c=qmf(b)
 D=qmf(C)
 
-q1=convolve(ts,b)
-q2=convolve(ts,c)
+#q1=convolve(ts,b)
+#q2=convolve(ts,c)
 
-q11=upfirdn(q1,[1],up=1,down=2)
-q22=upfirdn(q2,[1],up=1,down=2)
+q11=upfirdn(ts,b,up=1,down=2)
+q22=upfirdn(ts,c,up=1,down=2)
 
 q111=upfirdn(q11,[1],up=2,down=1)
 q222=upfirdn(q22,[1],up=2,down=1)
 
-Q1=convolve(q111,C)
-Q2=convolve(q222,D)
+#Q1=convolve(q111,C)
+#Q2=convolve(q222,D)
 
-Q=Q1+Q2
+Q=q111+q222
 
 w0,H0=freqz(b,1,256)
 w1,H1=freqz(c,1,256)

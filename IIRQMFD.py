@@ -1,17 +1,15 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri May 31 05:34:12 2019
-
-@author: Abhi
+To pass a signal through a 2 channel IIR Quadrature mirror  Filter bank
 """
 
 from numpy import flip,fliplr,linspace,abs,convolve
 from numpy import pi,cos,sin,log10
-from scipy.signal import qmf,freqz,hann,upfirdn
+from scipy.signal import qmf,freqz,upfirdn
 import matplotlib.pyplot as plt
 from scipy.fftpack import fft
 n=linspace(0,5)
-ts=sin(0.5*pi*n)
+ts=cos(0.5*pi*n)
 
 
 C=[1,2,3,1]
@@ -24,17 +22,17 @@ D=qmf(C)
 w2,H2=freqz(C,1,256)
 w3,H3=freqz(D,1,256)
 
-q1=convolve(ts,b)
-q2=convolve(ts,c)
+#q1=convolve(ts,b)
+#q2=convolve(ts,c)
 
-q11=upfirdn(q1,[1],up=1,down=2)
-q22=upfirdn(q2,[1],up=1,down=2)
+q11=upfirdn(ts,b,up=1,down=2)
+q22=upfirdn(ts,c,up=1,down=2)
 
-Q1=convolve(q11,C)
-Q2=convolve(q22,D)
+#Q1=convolve(q11,C)
+#Q2=convolve(q22,D)
 
-q1111=upfirdn(Q1,[1],up=2,down=1)
-q2222=upfirdn(Q2,[1],up=2,down=1)
+q1111=upfirdn(q11,C,up=2,down=1)
+q2222=upfirdn(q22,D,up=2,down=1)
 
 Q=q1111+q2222
 
