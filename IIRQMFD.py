@@ -5,15 +5,15 @@ To pass a signal through a 2 channel IIR Quadrature mirror  Filter bank
 
 from numpy import flip,fliplr,linspace,abs,convolve
 from numpy import pi,cos,sin,log10
-from scipy.signal import qmf,freqz,upfirdn
+from scipy.signal import qmf,freqz,resample_poly
 import matplotlib.pyplot as plt
 from scipy.fftpack import fft
 n=linspace(0,5)
 ts=cos(0.5*pi*n)
 
 
-C=[1,2,3,1]
-b=[1,2,3,1]
+C=[.1,.2,.3,.1]
+b=[.1,.2,.3,.1]
 c=qmf(b)
 w0,H0=freqz(b,1,256)
 w1,H1=freqz(c,1,256)
@@ -22,17 +22,17 @@ D=qmf(C)
 w2,H2=freqz(C,1,256)
 w3,H3=freqz(D,1,256)
 
-#q1=convolve(ts,b)
-#q2=convolve(ts,c)
+q1=convolve(ts,b)
+q2=convolve(ts,c)
 
-q11=upfirdn(ts,b,up=1,down=2)
-q22=upfirdn(ts,c,up=1,down=2)
+q11=resample_poly(q1,up=1,down=2)
+q22=resample_poly(q2,up=1,down=2)
 
-#Q1=convolve(q11,C)
-#Q2=convolve(q22,D)
+Q1=convolve(q11,C)
+Q2=convolve(q22,D)
 
-q1111=upfirdn(q11,C,up=2,down=1)
-q2222=upfirdn(q22,D,up=2,down=1)
+q1111=resample_poly(q11,up=2,down=1)
+q2222=resample_poly(q22,up=2,down=1)
 
 Q=q1111+q2222
 
@@ -47,7 +47,7 @@ J=20*log10(abs(H2))
 K=20*log10(abs(H3))
 
 
-plt.stem(b)
+plt.stem(b,use_line_collection=True)
 plt.title('IIR lowpass filter')
 plt.xlabel('n')
 plt.ylabel('Amplitude')
@@ -96,7 +96,7 @@ plt.ylabel('Amplitude')
 plt.show()
 
 plt.stem(Q)
-plt.title('Compressed signal')
+plt.title('Reconstructed signal')
 plt.xlabel('n')
 plt.ylabel('Amplitude')
 plt.show()
